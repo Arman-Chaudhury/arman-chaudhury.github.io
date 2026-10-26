@@ -106,8 +106,12 @@ a {
   top: auto;
   bottom: 4rem;
   justify-content: flex-start;
-  gap: 6px;
+  gap: 2.4rem;
   right: auto;
+}
+.view-btn .dim {
+  margin-right: 0.4em;
+  font-variant-numeric: tabular-nums;
 }
 .view-btn {
   color: var(--dim);
@@ -269,8 +273,8 @@ a {
   filter: blur(6px);
 }
 
-/* ---------- full index ---------- */
-.index {
+/* ---------- overlays (index, experience, contact) ---------- */
+.overlay {
   position: fixed;
   inset: 0;
   z-index: 15;
@@ -280,6 +284,113 @@ a {
   pointer-events: none;
   visibility: hidden;
 }
+.ov-inner {
+  width: 100%;
+  max-height: calc(100vh - 16rem);
+  overflow-y: auto;
+  scrollbar-width: none;
+  pointer-events: auto;
+}
+.ov-inner::-webkit-scrollbar {
+  display: none;
+}
+.ov-head {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 1.2rem;
+}
+.ov-head + .xp-list {
+  margin-bottom: 4rem;
+}
+.ov-cv {
+  border-bottom: 1px solid currentColor;
+}
+.xp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.xp-list li {
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.xp-list li:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.xp-row {
+  display: grid;
+  grid-template-columns: 16rem 1fr 1.3fr;
+  gap: 3vw;
+  padding: 1.6rem 0;
+  align-items: start;
+}
+.xp-dates {
+  color: var(--dim);
+  padding-top: 0.5em;
+}
+.xp-org {
+  font-size: clamp(18px, 2.4vw, 32px);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+.xp-title {
+  margin-top: 0.5em;
+  color: var(--dim);
+}
+.xp-bullets {
+  margin: 0;
+  padding: 0 0 0 1.2em;
+  font-size: max(12px, 1.3rem);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.78);
+}
+.xp-bullets li {
+  border: 0;
+  margin: 0 0 0.5em;
+}
+.xp-edu .xp-row {
+  grid-template-columns: 16rem 1fr 1.3fr;
+}
+.xp-edu .xp-org {
+  font-size: clamp(15px, 1.6vw, 22px);
+}
+
+.ct-inner {
+  text-align: left;
+}
+.ct-email {
+  display: block;
+  margin: 2rem 0 0;
+  font-size: clamp(26px, 6vw, 96px);
+  letter-spacing: -0.05em;
+  line-height: 1;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+  padding-bottom: 0.1em;
+  width: fit-content;
+  transition: border-color 0.3s;
+}
+.ct-email:hover {
+  border-color: #fff;
+}
+.ct-now {
+  max-width: 52rem;
+  margin: 3rem 0 0;
+  font-size: max(13px, 1.6rem);
+  color: rgba(255, 255, 255, 0.78);
+}
+.ct-links {
+  list-style: none;
+  padding: 0;
+  margin: 3rem 0 0;
+  display: flex;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+.ct-links a {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ---------- full index ---------- */
 .index-list {
   list-style: none;
   margin: 0;
@@ -301,7 +412,7 @@ a {
   width: 100%;
   text-align: left;
   padding: 0.28em 0;
-  font-size: clamp(22px, min(4.2vw, 5.4vh), 64px);
+  font-size: clamp(20px, min(3.4vw, 4.6vh), 52px);
   letter-spacing: -0.05em;
   line-height: 1;
   pointer-events: auto;
@@ -311,6 +422,19 @@ a {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.index-list .idx-sep {
+  border: 0;
+  padding: 3rem 0 0.8rem;
+}
+.index-list .idx-sep + li {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.index-list .idx-sep .label {
+  color: var(--dim);
+}
+a.index-row {
+  display: grid;
 }
 .index-row .label {
   letter-spacing: 0.01em;
@@ -323,8 +447,16 @@ a {
   color: var(--fg);
 }
 @media (max-width: 649px) {
-  .index {
+  .overlay {
     padding: 0 2rem;
+  }
+  .ov-inner {
+    max-height: calc(100vh - 12rem);
+  }
+  .xp-row,
+  .xp-edu .xp-row {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
   }
   .index-row {
     grid-template-columns: 3ch 1fr auto;
@@ -362,8 +494,6 @@ a {
   display: none;
 }
 .panel-meta {
-  position: sticky;
-  top: 0;
   align-self: start;
 }
 .panel-title {
@@ -401,10 +531,43 @@ a {
 .panel-tags .trophy {
   font-size: 13px;
 }
+.panel-links {
+  display: flex;
+  gap: 18px;
+  margin-top: 26px;
+}
 .panel-link {
   display: inline-block;
-  margin-top: 26px;
   border-bottom: 1px solid currentColor;
+}
+.panel-writeup {
+  margin-top: 34px;
+  max-width: 40ch;
+}
+.panel-writeup h3 {
+  margin: 22px 0 6px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #777;
+}
+.panel-writeup p,
+.panel-writeup li {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.panel-writeup ul {
+  margin: 0;
+  padding-left: 1.1em;
+}
+.panel-writeup li {
+  margin-bottom: 6px;
+}
+.panel-stack {
+  font-size: 11px;
+  color: #555;
 }
 .panel-media {
   display: flex;
