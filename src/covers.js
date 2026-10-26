@@ -60,6 +60,47 @@ function grain(ctx, W, H, amt = 14) {
 }
 
 const ART = {
+  // Generic dark "terminal" cover driven by project fields: accent, stat, statLabel, lines.
+  mono(ctx, W, H, r, v, p) {
+    const accent = p.accent || '#c6ff4a'
+    ctx.fillStyle = '#0a0b0b'
+    ctx.fillRect(0, 0, W, H)
+    nav(ctx, W, p.title.toUpperCase(), '#e8e8e8', accent)
+    font(ctx, H * 0.026, 400, 'ui-monospace, Menlo, monospace')
+    const lines = p.lines || []
+    for (let i = 0; i < lines.length; i++) {
+      const l = lines[i]
+      const hot = /!|CHANGED|PASS|paid/.test(l)
+      ctx.fillStyle = hot ? accent : '#6d726f'
+      ctx.globalAlpha = v === 1 && i % 2 ? 0.5 : 1
+      ctx.fillText(l, W * 0.04, H * 0.56 + i * H * 0.058)
+    }
+    ctx.globalAlpha = 1
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)'
+    ctx.lineWidth = 1
+    for (let i = 0; i < 6; i++) {
+      ctx.beginPath()
+      ctx.moveTo(W * 0.04, H * 0.52 + i * H * 0.058)
+      ctx.lineTo(W * 0.96, H * 0.52 + i * H * 0.058)
+      ctx.stroke()
+    }
+    font(ctx, W * (v === 2 ? 0.08 : 0.11), 300, SERIF)
+    ctx.fillStyle = '#eeeeee'
+    ctx.fillText(v === 2 ? (p.tags[0] || '').toUpperCase() : p.stat || '', W * 0.04, H * 0.36)
+    font(ctx, W * 0.015, 500)
+    ctx.fillStyle = accent
+    ctx.fillText(p.statLabel || '', W * 0.042, H * 0.36 + W * 0.035)
+    ctx.strokeStyle = accent
+    ctx.lineWidth = W * 0.0018
+    ctx.beginPath()
+    let y = H * 0.3
+    for (let x = 0; x < W * 0.4; x += W * 0.01) {
+      y += (r() - 0.5) * H * 0.04
+      y = Math.min(H * 0.44, Math.max(H * 0.12, y))
+      ctx.lineTo(W * 0.56 + x, y)
+    }
+    ctx.stroke()
+  },
   orderbook(ctx, W, H, r, v) {
     ctx.fillStyle = '#0b0d0c'
     ctx.fillRect(0, 0, W, H)
@@ -345,7 +386,7 @@ export function drawCover(project, variant = 0, width = 1600) {
   c.width = W
   c.height = H
   const ctx = c.getContext('2d')
-  ART[project.art](ctx, W, H, rng(project.slug + variant), variant)
+  ART[project.art](ctx, W, H, rng(project.slug + variant), variant, project)
   grain(ctx, W, H)
   return c
 }
