@@ -114,7 +114,9 @@ void main() {
   vec3 col = texture2D(u_map, cover(u_size, u_img, vUv)).rgb;
 
   // further along the sheet = darker
-  col = mix(col, vec3(0.059), 0.8 * pow(vDepth, u_spread) * u_shade);
+  // vDepth is clamped per vertex, but interpolation can dip a hair below 0 along grid
+  // edges; pow() of a negative base is NaN and paints black hairlines on bent cards.
+  col = mix(col, vec3(0.059), 0.8 * pow(clamp(vDepth, 0.0, 1.0), u_spread) * u_shade);
 
   // soft key light with a tight specular sheen
   vec3 n = normalize(vN);
